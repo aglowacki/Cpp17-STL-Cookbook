@@ -13,7 +13,7 @@ string filter_ws(const string &s)
     if (a == string::npos) {
         return {};
     }
-    return s.substr(a, b);
+    return s.substr(a, b - a + 1);
 }
 
 multimap<size_t, string> get_sentence_stats(const string &content)
@@ -32,6 +32,12 @@ multimap<size_t, string> get_sentence_stats(const string &content)
         if (s.length() > 0) {
             const auto words (count(begin(s), end(s), ' ') + 1);
             ret.emplace(make_pair(words, move(s)));
+        }
+
+        if (it2 == end_it) {
+            // Need to get out here, because the next line would set it1
+            // _past_ end_it.
+            break;
         }
 
         it1 = next(it2, 1);
